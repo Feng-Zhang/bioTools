@@ -2,18 +2,21 @@
 ##' @details nothing
 ##' @param phe A data.frame, the raw clinical information including vital_status, days_to_last_follow_up and days_to_death columns.
 ##' @param expr A data.frame, the raw expression matrix with colname of molecular id and individual ids.
-##' @return A data.frame include clinical information and expression matrix
+##' @param combine A logical, if TRUE would combine phe and expr into a data frame, otherwise return a list include clinical and expression data
+##' @return A list includes clinical information and expression matrix
 ##' @examples
 ##' \dontrun{
-##' library(bioTools)
-##' pheExpr = combinePheExpr(phe,expr)
+##' data(phe);data(expr)
+##' pheExpr = clean(phe,expr)
 ##' }
 ##' @export
-combinePheExpr <- function(phe,expr){
+clean <- function(phe,expr,combine=FALSE){
+  phe = cleanphe(phe)
+  expr = cleanExpr(expr)
   common_id = intersect(phe$bcr_patient_barcode,colnames(expr))
   phe = phe[phe$bcr_patient_barcode %in% common_id,]
-  expr = t(expr[,common_id])
-  phe_expr = cbind(phe,expr)
+  expr = expr[,common_id]
+  if(combine){phe_expr = cbind(phe,t(expr))} else phe_expr=list(phe,expr)
   return(phe_expr)
 }
 
