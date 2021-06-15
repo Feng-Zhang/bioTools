@@ -1,0 +1,40 @@
+---
+title: "base"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{base}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(bioTools)
+```
+
+```{r cleanData}
+
+data(phe);data(expr)
+cleanData = clean(phe,expr)
+
+```
+
+
+```{r uniCox}
+library(survival)
+featureNames=sample(expr[,1],10)
+uniCoxRes=NULL
+for(i in featureNames){
+  #i=featureNames[1]
+  cox <- coxph(Surv(survivalTime,survivalStatus) ~ cleanData[,i], data = cleanData)
+  coxSumm = summary(cox)
+  uniCoxRes = rbind(uniCoxRes,c(i,simpleSummary(coxSumm)))
+}
+
+```
