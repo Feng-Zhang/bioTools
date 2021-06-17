@@ -25,15 +25,16 @@ clean <- function(phe,expr,combine=FALSE){
 ##' @description Given a phenotype data frame, delete the individual with NA and calculate the survival time and status.
 ##' @details nothing
 ##' @param phe data.frame, the raw clinical information including vital_status, days_to_last_follow_up and days_to_death columns.
+##' @param minSurvivalTime integer, the threshold to delete individual with survival time < 30 days
 ##' @return data.frame, the clean clinical information including survivalStatus and survivalTime columns.
 ##' @export
 ##' @examples
 ##' data(phe);phe = cleanphe(phe)
-cleanphe <- function(phe){
+cleanphe <- function(phe,minSurvivalTime=30){
   #remove survial time and vital status with NA
   phe = unique(phe[!is.na(phe[,"vital_status"]),])
   phe[,"survivalTime"] = ifelse(phe[,"vital_status"]=="Alive",phe[,"days_to_last_follow_up"],phe[,"days_to_death"])
-  phe = phe[!is.na(phe[,"survivalTime"]),]
+  phe = phe[!is.na(phe[,"survivalTime"]) & phe[,"survivalTime"]>minSurvivalTime,]
   row.names(phe) = phe[,"bcr_patient_barcode"]
 
   #convert vital status to numeric
