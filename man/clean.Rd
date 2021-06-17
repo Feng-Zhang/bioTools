@@ -4,7 +4,7 @@
 \alias{clean}
 \title{Clean the pheontype and expression data from TCGA}
 \usage{
-clean(phe, expr, combine = FALSE)
+clean(phe, expr, combine = FALSE, minSurvivalTime = 30)
 }
 \arguments{
 \item{phe}{A data.frame, the raw clinical information including vital_status, days_to_last_follow_up and days_to_death columns.}
@@ -12,6 +12,8 @@ clean(phe, expr, combine = FALSE)
 \item{expr}{A data.frame, the raw expression matrix with colname of molecular id and individual ids.}
 
 \item{combine}{A logical, if TRUE would combine phe and expr into a data frame, otherwise return a list include clinical and expression data}
+
+\item{minSurvivalTime}{integer, the threshold to delete individual with survival time < 30 days}
 }
 \value{
 A list includes clinical information and expression matrix
@@ -24,7 +26,7 @@ nothing
 }
 \examples{
 \dontrun{
-library(bioTools)
+data(phe);data(expr)
 pheExpr = clean(phe,expr)
 }
 }

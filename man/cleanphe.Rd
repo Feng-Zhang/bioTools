@@ -4,10 +4,12 @@
 \alias{cleanphe}
 \title{Clean the phenotype data from TCGA}
 \usage{
-cleanphe(phe)
+cleanphe(phe, minSurvivalTime = 30)
 }
 \arguments{
 \item{phe}{data.frame, the raw clinical information including vital_status, days_to_last_follow_up and days_to_death columns.}
+
+\item{minSurvivalTime}{integer, the threshold to delete individual with survival time < 30 days}
 }
 \value{
 data.frame, the clean clinical information including survivalStatus and survivalTime columns.

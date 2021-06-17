@@ -3,6 +3,7 @@
 ##' @param phe A data.frame, the raw clinical information including vital_status, days_to_last_follow_up and days_to_death columns.
 ##' @param expr A data.frame, the raw expression matrix with colname of molecular id and individual ids.
 ##' @param combine A logical, if TRUE would combine phe and expr into a data frame, otherwise return a list include clinical and expression data
+##' @param minSurvivalTime integer, the threshold to delete individual with survival time < 30 days
 ##' @return A list includes clinical information and expression matrix
 ##' @examples
 ##' \dontrun{
@@ -10,8 +11,8 @@
 ##' pheExpr = clean(phe,expr)
 ##' }
 ##' @export
-clean <- function(phe,expr,combine=FALSE){
-  phe = cleanphe(phe)
+clean <- function(phe,expr,combine=FALSE,minSurvivalTime=30){
+  phe = cleanphe(phe,minSurvivalTime=minSurvivalTime)
   expr = cleanExpr(expr)
   common_id = intersect(phe$bcr_patient_barcode,colnames(expr))
   phe = phe[phe$bcr_patient_barcode %in% common_id,]
