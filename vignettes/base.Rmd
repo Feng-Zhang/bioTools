@@ -1,0 +1,53 @@
+---
+title: "base"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{base}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(bioTools)
+```
+## 介绍
+本项目主要是收集一些封装的函数，减少平时生信分析的代码量。不用重复写一些频率较高的小工具。
+
+
+## 与风险模型相关的函数
+首先我们需要加载数据，从[TCGA]()下载胆管癌的RNA-seq和临床数据。
+```{r cleanData}
+data(phe);data(expr)
+clean_tcga = create_tcga(phe,expr)
+```
+
+修改下面的例子。只有重复性高且有规律的工具才要改造成函数，其它的则不用。
+```{r uniCox}
+library(survival)
+featureNames=sample(expr[,1],10)
+uniCoxRes=NULL
+for(i in featureNames){
+  #i=featureNames[1]
+  cox <- coxph(Surv(survivalTime,survivalStatus) ~ cleanData[,i], data = cleanData)
+  coxSumm = summary(cox)
+  uniCoxRes = rbind(uniCoxRes,c(i,simpleSummary(coxSumm)))
+}
+
+```
+
+
+## 与免疫相关的函数
+### esimate stromal, immune, and ESTIMATE scores
+```
+score <- estimate2(expr)
+```
+只需要表达矩阵就可以计算出基质评分，免疫评分和ESTIMATE评分。表达矩阵是一个有行名和列名的数据框，行名为SYMBOL号，列名为个体ID号。
+
+
