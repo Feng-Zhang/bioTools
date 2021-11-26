@@ -10,7 +10,7 @@
 ##' pheExpr = creat_tcga(phe,expr)
 ##' }
 ##' @export
-create_tcga <- function(phe,expr,min_survival_time=30){
+create_omics <- function(phe,expr,min_survival_time=30){
   phe <- clean_phe(phe,min_survival_time=min_survival_time)
   expr <- split_expr(expr)
   common_id <- intersect(phe$bcr_patient_barcode,colnames(expr$tumor_expr))
@@ -33,12 +33,12 @@ create_tcga <- function(phe,expr,min_survival_time=30){
 clean_phe <- function(phe,min_survival_time=30){
   #remove survial time and vital status with NA
   phe <- unique(phe[!is.na(phe[,"vital_status"]),])
-  phe[,"survivalTime"] <- ifelse(phe[,"vital_status"]=="Alive",phe[,"days_to_last_follow_up"],phe[,"days_to_death"])
-  phe <- phe[!is.na(phe[,"survivalTime"]) & phe[,"survivalTime"]>min_survival_time,]
+  phe[,"survival_time"] <- ifelse(phe[,"vital_status"]=="Alive",phe[,"days_to_last_follow_up"],phe[,"days_to_death"])
+  phe <- phe[!is.na(phe[,"survival_time"]) & phe[,"survival_time"]>min_survival_time,]
   row.names(phe) <- phe[,"bcr_patient_barcode"]
 
   #convert vital status to numeric
-  phe[,"survivalStatus"] <- as.numeric(as.factor(phe[,"vital_status"]))
+  phe[,"survival_status"] <- as.numeric(as.factor(phe[,"vital_status"]))
   return(phe)
 }
 
@@ -60,7 +60,8 @@ split_expr <- function(expr){
   # delete deplicated individual
   if(any(duplicated(colnames(expr)))){
     ids <- data.frame(sample=colnames(expr),type = str_sub(colnames(expr),14,15))
-    uniqIds <- by(ids,ids$sample,function(x) x$sample[which.min(x$type)])
+    uniqIds <- by(ids,ids$sample,function(x) row.names(x)[which.min(x$type)])
+    expr <- expr[,as.numeric(uniqIds)]
   }
 
   # extract tumor and normal
