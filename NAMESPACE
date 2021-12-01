@@ -3,7 +3,7 @@
 S3method(simple_summary,default)
 S3method(simple_summary,summary.coxph)
 export(clean_phe)
-export(create_omics)
+export(create_tcga)
 export(simple_summary)
 export(split_expr)
 importFrom(stringr,str_detect)

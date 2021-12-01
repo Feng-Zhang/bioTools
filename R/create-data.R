@@ -10,7 +10,7 @@
 ##' pheExpr = creat_tcga(phe,expr)
 ##' }
 ##' @export
-create_omics <- function(phe,expr,min_survival_time=30){
+create_tcga <- function(phe,expr,min_survival_time=30){
   phe <- clean_phe(phe,min_survival_time=min_survival_time)
   expr <- split_expr(expr)
   common_id <- intersect(phe$bcr_patient_barcode,colnames(expr$tumor_expr))
@@ -53,9 +53,9 @@ clean_phe <- function(phe,min_survival_time=30){
 ##' @examples
 ##' data(expr);expr = split_expr(expr)
 split_expr <- function(expr){
-  stopifnot(str_detect(colnames(expr)[2],pattern="TCGA-.{2}-.{4}-.{3}-.{3}-.{4}-.{2}"))
+  stopifnot(str_detect(colnames(expr)[2],pattern="TCGA-.{2}-.{4}-.{3}.*"))
   expr <- data.frame(row.names = expr[,1],expr[,-1],check.names =FALSE)
-  colnames(expr) <- str_sub(colnames(expr),1,15)
+  colnames(expr) <- str_sub(colnames(expr),1,16)
 
   # delete deplicated individual
   if(any(duplicated(colnames(expr)))){
