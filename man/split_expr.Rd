@@ -19,5 +19,7 @@ Delete the duplicated individual and rename the colnames.
 nothing
 }
 \examples{
+\dontrun{
 data(expr);expr = split_expr(expr)
+}
 }

@@ -25,6 +25,6 @@ nothing
 \examples{
 \dontrun{
 data(phe);data(expr)
-pheExpr = creat_tcga(phe,expr)
+pheExpr = create_tcga(phe,expr)
 }
 }
